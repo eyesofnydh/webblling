@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to Webling — Your Tiny Web Hero</title>
+    <link rel="stylesheet" href="onboarding.css" />
+  </head>
+  <body>
+    <main class="onboarding-card" role="region" aria-label="Webling Tour">
+      <header class="header">
+        <div class="hero-badge" aria-hidden="true">
+          <img src="assets/icon-48.png" alt="" />
+        </div>
+        <div>
+          <span class="eyebrow">WELCOME TO</span>
+          <h1>Webling</h1>
+        </div>
+        <button id="skipBtn" class="btn-ghost" title="Skip tour and get started">Skip</button>
+      </header>
+
+      <!-- Step 1: Meet Webling -->
+      <section class="step active" data-step="1">
+        <div class="step-visual">
+          <img src="webling-preview.png" alt="Webling character preview" />
+        </div>
+        <h2>Meet Your Web Companion</h2>
+        <p>
+          Webling is a tiny, masked spider-hero that hangs, sways, and swings across your webpages.
+          Cute, lightweight, privacy-first, and always ready to patrol your tabs.
+        </p>
+      </section>
+
+      <!-- Step 2: Controls & Shortcuts -->
+      <section class="step" data-step="2">
+        <div class="step-visual pixel-box">
+          <div class="shortcut-badge">
+            <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>
+          </div>
+          <p class="sub-caption">Anytime, anywhere on any normal webpage</p>
+        </div>
+        <h2>Summon & Interact</h2>
+        <p>
+          Press <strong>Alt + Shift + S</strong> or click <strong>Summon Webling</strong> in the toolbar popup to call your hero.
+          Drag Webling anywhere with your mouse or finger, or click him directly to watch him swing!
+        </p>
+      </section>
+
+      <!-- Step 3: Focus Patrol -->
+      <section class="step" data-step="3">
+        <div class="step-visual pixel-box">
+          <span class="badge-icon">🎯</span>
+          <div class="timer-preview">25:00</div>
+          <p class="sub-caption">Focus Patrol Mode</p>
+        </div>
+        <h2>Focus Patrol & Timer</h2>
+        <p>
+          Need to get things done? Launch a Focus session from 1 to 180 minutes. Webling calms down,
+          quiets distractions, keeps a compact floating timer on the page, and celebrates with you when you finish.
+        </p>
+      </section>
+
+      <!-- Step 4: Hydration & Rescues -->
+      <section class="step" data-step="4">
+        <div class="step-visual pixel-box">
+          <div class="icons-row">
+            <span>💧</span>
+            <span>🕷️</span>
+            <span>🏆</span>
+          </div>
+          <p class="sub-caption">Hydration, Spiders & Rewards</p>
+        </div>
+        <h2>Water Goals & Spider Rescues</h2>
+        <p>
+          Track your daily water glasses right from the page or popup. Keep an eye out for crawling tiny spiders to rescue
+          and unlock achievements, custom web lines, themes, and badges!
+        </p>
+      </section>
+
+      <!-- Step 5: Privacy & Site Controls -->
+      <section class="step" data-step="5">
+        <div class="step-visual pixel-box">
+          <span class="badge-icon">🛡️</span>
+          <p class="sub-caption">100% Local & Private</p>
+        </div>
+        <h2>Privacy & Site Controls</h2>
+        <p>
+          Webling never collects analytics, never contacts remote servers, and requires no account.
+          You can hide Webling globally or on specific sites with a single click.
+        </p>
+      </section>
+
+      <!-- Navigation Footer -->
+      <footer class="footer">
+        <div class="dots" role="tablist" aria-label="Tour progress">
+          <span class="dot active" role="tab" aria-selected="true" aria-label="Step 1"></span>
+          <span class="dot" role="tab" aria-selected="false" aria-label="Step 2"></span>
+          <span class="dot" role="tab" aria-selected="false" aria-label="Step 3"></span>
+          <span class="dot" role="tab" aria-selected="false" aria-label="Step 4"></span>
+          <span class="dot" role="tab" aria-selected="false" aria-label="Step 5"></span>
+        </div>
+        <div class="buttons">
+          <button id="prevBtn" class="btn-secondary" disabled>Back</button>
+          <button id="nextBtn" class="btn-primary">Next</button>
+        </div>
+      </footer>
+    </main>
+    <script type="module" src="onboarding.js"></script>
+  </body>
+</html>

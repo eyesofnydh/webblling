@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Webling — Your Tiny Web Hero</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="popup-container">
+      <!-- Top Hero Header -->
+      <header class="hero-header">
+        <div class="mini-avatar" aria-hidden="true">
+          <img src="assets/webling-cute-reference-strip.png" alt="" />
+        </div>
+        <div class="header-titles">
+          <span class="eyebrow">YOUR TINY WEB HERO</span>
+          <h1>Webling</h1>
+        </div>
+        <label class="switch" title="Toggle Webling Globally">
+          <input id="globalEnabled" type="checkbox" aria-label="Toggle Webling Globally" />
+          <span class="slider"></span>
+        </label>
+      </header>
+
+      <!-- Status & Site Card -->
+      <section class="status-card" id="statusCard" aria-live="polite">
+        <div class="status-top">
+          <span class="pulse" id="statusPulse" aria-hidden="true"></span>
+          <div class="status-details">
+            <strong id="statusTitle">Patrolling this page</strong>
+            <span id="statusText">Everything looks web-tastic.</span>
+          </div>
+        </div>
+        <div class="site-bar" id="siteBar">
+          <span class="hostname" id="currentHostname">example.com</span>
+          <button id="siteToggleBtn" class="site-btn" aria-label="Toggle Webling on this site">
+            Disable on site
+          </button>
+        </div>
+      </section>
+
+      <!-- Primary Summon Button -->
+      <button id="summonBtn" class="primary-btn">
+        <span class="web-icon" aria-hidden="true">✦</span>
+        Summon Webling
+        <kbd class="shortcut-pill">Alt+Shift+S</kbd>
+      </button>
+
+      <!-- Tab Navigation -->
+      <nav class="nav-tabs" role="tablist" aria-label="Webling Sections">
+        <button class="tab-btn active" role="tab" data-tab="tab-home" aria-selected="true">Home</button>
+        <button class="tab-btn" role="tab" data-tab="tab-focus" aria-selected="false">Focus</button>
+        <button class="tab-btn" role="tab" data-tab="tab-progress" aria-selected="false">Progress</button>
+        <button class="tab-btn" role="tab" data-tab="tab-customize" aria-selected="false">Customize</button>
+        <button class="tab-btn" role="tab" data-tab="tab-settings" aria-selected="false">Settings</button>
+      </nav>
+
+      <!-- TAB 1: HOME -->
+      <main id="tab-home" class="tab-content active" role="tabpanel">
+        <!-- Quick Focus Bar -->
+        <section class="card quick-focus-card">
+          <div class="card-header">
+            <span class="card-icon">🎯</span>
+            <div>
+              <strong>Focus Patrol</strong>
+              <small id="quickFocusStatus">Ready for deep work</small>
+            </div>
+            <button id="quickFocusBtn" class="btn-sm btn-primary">Start (25m)</button>
+          </div>
+        </section>
+
+        <!-- Hydration Tracker -->
+        <section class="card hydration-card">
+          <div class="hydration-header">
+            <span class="drop-icon">💧</span>
+            <div class="hydration-copy">
+              <strong>Water Mission</strong>
+              <small id="waterStatus">0 of 8 glasses today</small>
+              <div class="progress-track" aria-hidden="true">
+                <div id="waterBar" class="progress-fill"></div>
+              </div>
+            </div>
+            <div class="hydration-actions">
+              <button id="quickWaterSub" class="btn-icon" title="Undo one glass">−</button>
+              <button id="quickWaterAdd" class="btn-icon btn-blue" title="I drank a glass">+1</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Page Intel -->
+        <section class="card page-intel-card">
+          <div class="card-title-row">
+            <span class="section-label">PAGE INTEL</span>
+            <button id="refreshStatsBtn" class="link-btn" title="Refresh page stats">↻ Refresh</button>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <strong id="wordCount">—</strong>
+              <span>words</span>
+            </div>
+            <div class="stat-box">
+              <strong id="readTime">—</strong>
+              <span>min read</span>
+            </div>
+            <div class="stat-box">
+              <strong id="linkCount">—</strong>
+              <span>links</span>
+            </div>
+          </div>
+          <div class="stats-subgrid">
+            <small>Headings: <b id="headingCount">—</b></small>
+            <small>Images: <b id="imageCount">—</b></small>
+          </div>
+        </section>
+      </main>
+
+      <!-- TAB 2: FOCUS PATROL -->
+      <section id="tab-focus" class="tab-content" role="tabpanel">
+        <div class="card focus-main-card">
+          <div class="timer-display">
+            <span class="timer-status-badge" id="focusStatusBadge">READY</span>
+            <div class="timer-digits" id="timerDigits">25:00</div>
+            <div class="timer-progress-track">
+              <div class="timer-progress-fill" id="timerProgressFill"></div>
+            </div>
+          </div>
+
+          <!-- Timer Presets -->
+          <div class="presets-row" id="focusPresets">
+            <button class="preset-btn" data-min="15">15m</button>
+            <button class="preset-btn active" data-min="25">25m</button>
+            <button class="preset-btn" data-min="45">45m</button>
+            <button class="preset-btn" data-min="60">60m</button>
+          </div>
+
+          <!-- Custom Duration -->
+          <div class="custom-duration-row">
+            <label for="customFocusDuration">Custom minutes (1–180):</label>
+            <div class="custom-input-group">
+              <input type="number" id="customFocusDuration" min="1" max="180" value="25" />
+              <button id="applyCustomDurationBtn" class="btn-sm">Set</button>
+            </div>
+          </div>
+
+          <!-- Focus Control Buttons -->
+          <div class="focus-btn-group">
+            <button id="focusStartBtn" class="btn-primary">Start Session</button>
+            <button id="focusPauseBtn" class="btn-secondary hidden">Pause</button>
+            <button id="focusResumeBtn" class="btn-primary hidden">Resume</button>
+            <button id="focusResetBtn" class="btn-danger hidden">Reset</button>
+          </div>
+
+          <div class="focus-options">
+            <label class="control-row">
+              <span><strong>Auto-start break</strong><small>5 min break when complete</small></span>
+              <input id="focusAutoBreak" type="checkbox" />
+              <i class="mini-switch"></i>
+            </label>
+            <label class="control-row">
+              <span><strong>Dim page videos</strong><small>Soften distracting video elements</small></span>
+              <input id="videoDimming" type="checkbox" />
+              <i class="mini-switch"></i>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: PROGRESS & ACHIEVEMENTS -->
+      <section id="tab-progress" class="tab-content" role="tabpanel">
+        <!-- Overview Stats -->
+        <div class="card stats-overview-card">
+          <span class="section-label">CAREER HIGHLIGHTS</span>
+          <div class="progress-grid">
+            <div class="stat-card">
+              <span class="stat-icon">🕷️</span>
+              <strong id="statSpiders">0</strong>
+              <small>Spiders Saved</small>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">🎯</span>
+              <strong id="statSessions">0</strong>
+              <small>Focus Sessions</small>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">⏳</span>
+              <strong id="statMinutes">0</strong>
+              <small>Focus Minutes</small>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">🔥</span>
+              <strong id="statFocusStreak">0</strong>
+              <small>Focus Streak</small>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">💧</span>
+              <strong id="statWaterGoals">0</strong>
+              <small>Water Goals</small>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">🌊</span>
+              <strong id="statWaterStreak">0</strong>
+              <small>Water Streak</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Achievements List -->
+        <div class="card achievements-card">
+          <div class="card-title-row">
+            <span class="section-label">ACHIEVEMENTS</span>
+            <span class="ach-count" id="achProgressCount">0/12</span>
+          </div>
+          <div class="achievements-list" id="achievementsList">
+            <!-- Dynamically populated from JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: CUSTOMIZE & REWARDS -->
+      <section id="tab-customize" class="tab-content" role="tabpanel">
+        <div class="card customize-card">
+          <span class="section-label">WEBLING STYLING</span>
+
+          <label class="select-row" for="personalitySelect">
+            <span><strong>Personality</strong><small>Voice, attitude and dialogue</small></span>
+            <select id="personalitySelect">
+              <option value="cheeky">Cheeky (Witty & Playful)</option>
+              <option value="brave">Brave (Heroic & Bold)</option>
+              <option value="calm">Calm (Zen & Mindful)</option>
+            </select>
+          </label>
+
+          <label class="select-row" for="charSizeSelect">
+            <span><strong>Character Size</strong><small>Scale on page</small></span>
+            <select id="charSizeSelect">
+              <option value="small">Small (64px)</option>
+              <option value="medium">Medium (88px)</option>
+              <option value="large">Large (112px)</option>
+            </select>
+          </label>
+
+          <label class="select-row" for="startPosSelect">
+            <span><strong>Starting Position</strong><small>Corner where Webling spawns</small></span>
+            <select id="startPosSelect">
+              <option value="top-right">Top Right</option>
+              <option value="top-left">Top Left</option>
+              <option value="bottom-right">Bottom Right</option>
+              <option value="bottom-left">Bottom Left</option>
+            </select>
+          </label>
+
+          <div class="color-row">
+            <span><strong>Web Line Color</strong><small>Custom web strand color</small></span>
+            <div class="color-picker-wrap">
+              <input type="color" id="webLineColor" value="#e8fbff" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Unlockable Cosmetics -->
+        <div class="card cosmetics-card">
+          <span class="section-label">COSMETIC REWARDS</span>
+          <div class="cosmetics-list" id="cosmeticsList">
+            <!-- Dynamically populated from JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: SETTINGS & PRIVACY -->
+      <section id="tab-settings" class="tab-content" role="tabpanel">
+        <div class="card settings-card">
+          <span class="section-label">PAGE COMPANIONS</span>
+
+          <label class="control-row">
+            <span><strong>Tiny Spider Squad</strong><small>Crawling friends you can rescue</small></span>
+            <input id="spidersEnabled" type="checkbox" />
+            <i class="mini-switch"></i>
+          </label>
+
+          <label class="control-row">
+            <span><strong>Hydration Widget</strong><small>Floating drink tracker on page</small></span>
+            <input id="showHydrationWidget" type="checkbox" />
+            <i class="mini-switch"></i>
+          </label>
+
+          <label class="control-row">
+            <span><strong>Focus Indicator</strong><small>Floating countdown badge on page</small></span>
+            <input id="showFocusIndicator" type="checkbox" />
+            <i class="mini-switch"></i>
+          </label>
+
+          <label class="control-row">
+            <span><strong>Speech Bubbles</strong><small>Webling's commentary bubbles</small></span>
+            <input id="showSpeechBubbles" type="checkbox" />
+            <i class="mini-switch"></i>
+          </label>
+
+          <label class="control-row">
+            <span><strong>Quiet Mode</strong><small>Suppress unsolicited speech bubbles</small></span>
+            <input id="quietMode" type="checkbox" />
+            <i class="mini-switch"></i>
+          </label>
+
+          <label class="control-row">
+            <span><strong>Swing to Page Clicks</strong><small>Disabled by default; follows clicks</small></span>
+            <input id="swingToClicks" type="checkbox" />
+            <i class="mini-switch"></i>
+          </label>
+
+          <label class="control-row">
+            <span><strong>Reduced Motion</strong><small>Disable swaying and fast motion</small></span>
+            <input id="reducedMotion" type="checkbox" />
+            <i class="mini-switch"></i>
+          </label>
+
+          <label class="select-row" for="mishapFreqSelect">
+            <span><strong>Funny Mishaps</strong><small>Slip-and-save surprise frequency</small></span>
+            <select id="mishapFreqSelect">
+              <option value="off">Off</option>
+              <option value="rare">Rare</option>
+              <option value="normal">Normal</option>
+              <option value="frequent">Frequent</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="card reminders-card">
+          <span class="section-label">NOTIFICATIONS & REMINDERS</span>
+
+          <label class="control-row">
+            <span><strong>Browser Notifications</strong><small>Focus & hydration alerts</small></span>
+            <input id="notificationsEnabled" type="checkbox" />
+            <i class="mini-switch"></i>
+          </label>
+
+          <label class="control-row">
+            <span><strong>Hydration Reminders</strong><small>Periodic reminders to take a sip</small></span>
+            <input id="hydrationRemindersEnabled" type="checkbox" />
+            <i class="mini-switch"></i>
+          </label>
+
+          <label class="select-row" for="reminderIntervalSelect">
+            <span><strong>Reminder Interval</strong><small>Minutes between alerts</small></span>
+            <select id="reminderIntervalSelect">
+              <option value="30">Every 30 minutes</option>
+              <option value="45">Every 45 minutes</option>
+              <option value="60">Every 60 minutes</option>
+              <option value="90">Every 90 minutes</option>
+            </select>
+          </label>
+
+          <label class="select-row" for="hydrationTargetSelect">
+            <span><strong>Daily Water Goal</strong><small>Target glasses per day</small></span>
+            <select id="hydrationTargetSelect">
+              <option value="4">4 glasses</option>
+              <option value="6">6 glasses</option>
+              <option value="8">8 glasses (Standard)</option>
+              <option value="10">10 glasses</option>
+              <option value="12">12 glasses</option>
+            </select>
+          </label>
+        </div>
+
+        <!-- Help & Onboarding -->
+        <div class="card help-card">
+          <span class="section-label">HELP & TOURS</span>
+          <button id="reopenOnboardingBtn" class="btn-secondary w-full">Reopen Feature Tour</button>
+        </div>
+
+        <!-- Privacy Card -->
+        <div class="card privacy-card">
+          <span class="section-label">LOCAL & PRIVATE</span>
+          <p class="privacy-text">
+            🛡️ Webling never collects analytics, never contacts remote servers, and requires no account.
+            All stats and preferences remain strictly inside your browser storage.
+          </p>
+        </div>
+
+        <!-- Danger Zone / Resets -->
+        <div class="card danger-card">
+          <span class="section-label">RESET OPTIONS</span>
+          <div class="reset-buttons">
+            <button id="resetHydrationBtn" class="btn-outline-danger">Reset Today's Hydration</button>
+            <button id="resetFocusBtn" class="btn-outline-danger">Reset Focus Stats</button>
+            <button id="resetAchievementsBtn" class="btn-outline-danger">Reset Achievements</button>
+            <button id="resetSettingsBtn" class="btn-outline-danger">Reset Settings to Default</button>
+            <button id="resetAllBtn" class="btn-danger w-full">Reset Everything (Full Wipe)</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer Info -->
+      <footer class="popup-footer">
+        <span>Tip: press <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> to summon</span>
+      </footer>
+    </div>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

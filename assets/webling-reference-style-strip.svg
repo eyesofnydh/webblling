@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 96" shape-rendering="crispEdges">
+  <title>Webling high-detail pixel animation strip</title>
+  <defs>
+    <style>
+      .o{fill:#080b14}.r{fill:#e31d3f}.rh{fill:#ff4058}.rs{fill:#97142f}.b{fill:#16419b}.bh{fill:#2861cb}.bs{fill:#0b245e}.w{fill:#f5fbff}.ws{fill:#acd8e9}.web{fill:#e9faff}.seam{fill:#590c22}
+    </style>
+  </defs>
+
+  <!-- 01 / upside-down idle -->
+  <g>
+    <path class="web" d="M31 0h3v12h-3z"/>
+    <path class="o" d="M21 9h9v3h4V9h9v4h5v9h-4v5h-7v7H27v-7h-7v-5h-4v-9h5z"/>
+    <path class="r" d="M22 12h7v4h3v9h-7v-3h-6v-7h3zm13 0h7v3h3v7h-6v3h-7v-9h3z"/>
+    <path class="rh" d="M22 13h5v3h-5zm14 0h5v3h-5z"/>
+    <path class="b" d="M25 23h7v9h-4v-5h-5zm7 0h7l2 4h-6v5h-3z"/>
+    <path class="o" d="M20 29h24v4h5v20h-4v6H19v-6h-4V33h5z"/>
+    <path class="b" d="M19 34h9v20h-8l-2-4V37zm17 0h9v16l-2 4h-8V34z"/>
+    <path class="bh" d="M20 35h4v15h-4zm18 0h4v15h-4z"/>
+    <path class="r" d="M28 32h8v24h-8zM24 35h4v8h-4zm12 0h4v8h-4z"/>
+    <path class="rh" d="M29 33h3v15h-3z"/>
+    <path class="o" d="M20 53h24v4h5v8h3v17h-4v7h-6v5H22v-5h-6v-7h-4V65h3v-8h5z"/>
+    <path class="r" d="M21 57h22v4h4v20h-4v6h-5v4H26v-4h-6v-6h-4V65h5z"/>
+    <path class="rh" d="M22 58h8v27h-6v-6h-3V64h1z"/>
+    <path class="seam" d="M31 57h3v31h-3zM18 68h28v3H18zm1 11h26v3H19zm5-19h16v2H24z"/>
+    <path class="o" d="M19 64h13v5h-3v12h-5v-4h-5zm26 0H32v5h3v12h5v-4h5z"/>
+    <path class="w" d="M22 67h7v3h-2v7h-3v-4h-2zm20 0h-7v3h2v7h3v-4h2z"/>
+    <path class="ws" d="M24 71h3v6h-3zm13 0h3v6h-3z"/>
+    <path class="o" d="M29 38h6v11h-6zm-5 3h5v3h-5zm11 0h5v3h-5zm-8 8h3v5h-3zm7 0h3v5h-3z"/>
+  </g>
+
+  <!-- 02 / wrist-shot anticipation -->
+  <g transform="translate(64)">
+    <path class="o" d="M23 8h18v4h5v6h3v15h-4v7H19v-7h-4V18h3v-6h5z"/>
+    <path class="r" d="M24 12h16v3h4v17h-4v5H24v-5h-5V18h5z"/>
+    <path class="rh" d="M25 13h6v18h-6z"/>
+    <path class="seam" d="M31 12h3v24h-3zM21 23h22v3H21z"/>
+    <path class="o" d="M21 18h12v5h-3v11h-5v-4h-4zm23 0H33v5h3v11h5v-4h3z"/>
+    <path class="w" d="M24 21h6v3h-2v6h-3v-3h-1zm17 0h-5v3h2v6h2v-3h1z"/>
+    <path class="o" d="M20 38h25v4h6v17h-5v8H18v-6h-5V43h7z"/>
+    <path class="b" d="M17 43h11v20H19l-3-4zm19 0h10l2 4v11l-4 5h-8z"/>
+    <path class="r" d="M27 41h10v23H27zM23 43h4v9h-4zm14 0h4v9h-4z"/>
+    <path class="o" d="M16 42 4 39v-3H0v-8h5v5l15 3 4 8-3 9-6-2z"/>
+    <path class="r" d="M5 35h11l5 6-3 7-3-1 1-6-11-3z"/>
+    <path class="web" d="M0 29h5v3H0z"/>
+    <path class="o" d="M45 43h7v4h5v10h-4v6h-9l-3-8z"/>
+    <path class="r" d="M46 47h5v3h3v6h-4v4h-5l-1-6z"/>
+    <path class="o" d="M19 62h12v5h4v-5h12v5h5v11h-5v5H36v-4h-8v4H17v-5h-5V68h7z"/>
+    <path class="b" d="M19 66h10v9h-4v4h-8v-3h-2v-6h4zm17 0h10v4h3v6h-3v3h-8v-4h-3z"/>
+    <path class="r" d="M13 68h7v11h-7zm34 0h6v11h-7v-10z"/>
+    <path class="o" d="M29 47h7v12h-7zm-5 3h5v3h-5zm12 0h5v3h-5z"/>
+  </g>
+
+  <!-- 03 / dynamic swing -->
+  <g transform="translate(128)">
+    <path class="web" d="M46 0h3v14h-3z"/>
+    <path class="o" d="M38 10h9v4h5v15h-4v4h-8v-5h-5v-8h3z"/>
+    <path class="r" d="M40 14h6v3h3v10h-3v3h-5v-5h-3v-5h2z"/>
+    <path class="o" d="M26 16h13v4h5v16h-4v6H18v-5h-4V24h5v-4h7z"/>
+    <path class="r" d="M27 20h10v3h4v11h-4v5H20v-4h-3V26h4v-3h6z"/>
+    <path class="rh" d="M28 21h4v13h-4z"/>
+    <path class="o" d="M22 25h8v4h-2v8h-4v-3h-2zm16 0h-8v4h2v8h4v-3h2z"/>
+    <path class="w" d="M24 27h4v3h-2v4h-2zm12 0h-4v3h2v4h2z"/>
+    <path class="o" d="M17 38h24v4h5v17h-4v7H18v-5h-5V44h4z"/>
+    <path class="r" d="M20 42h18v4h4v11h-4v5H20v-4h-3V46h3z"/>
+    <path class="b" d="M17 44h8v16h-6l-2-4zm18 0h7v13l-3 3h-5z"/>
+    <path class="o" d="m18 43-8 5-5-3-5 5v10h5v-6l5 1 13-6zm23 2 8 8 8 1 5 6-3 8-5-2 2-6-9-1-11-7z"/>
+    <path class="r" d="m16 47-7 5-5-2-1 8 4-1 2-2 11-5zm25 2 9 7 7 1 2 4-2 4-3-2 1-3-7-1-11-7z"/>
+    <path class="o" d="M18 60h11v6l-9 9-9 1-3 8-8-2 3-11 12-8zm17 0h10v6l8 8 8 1 3 8-8 3-4-7-10-2-11-12z"/>
+    <path class="b" d="M19 64h7l-8 8-7 1-2 7-5-1 2-6 11-7zm18 0h6l7 12 8 2 2 4-4 1-4-6-9-2-9-10z"/>
+    <path class="r" d="m3 72 7 2-2 9-6-2zm50 4 8 1 3 6-7 2-3-6z"/>
+  </g>
+
+  <!-- 04 / recovery hang -->
+  <g transform="translate(192)">
+    <path class="web" d="M31 0h3v13h-3z"/>
+    <path class="o" d="M23 10h18v4h5v15h-4v7H20v-6h-4V17h7z"/>
+    <path class="r" d="M24 14h16v3h3v11h-4v5H23v-5h-4V19h5z"/>
+    <path class="rh" d="M25 15h6v15h-6z"/>
+    <path class="seam" d="M31 14h3v18h-3zM21 23h21v3H21z"/>
+    <path class="o" d="M21 19h11v4h-3v8h-5v-3h-3zm22 0H32v4h3v8h5v-3h3z"/>
+    <path class="w" d="M24 21h5v3h-2v4h-3zm16 0h-5v3h2v4h3z"/>
+    <path class="o" d="M20 34h24v4h5v16h-4v6H19v-5h-4V39h5z"/>
+    <path class="b" d="M19 39h9v17h-8l-2-4V42zm17 0h9v13l-3 4h-7V39z"/>
+    <path class="r" d="M28 37h8v21h-8zM24 39h4v7h-4zm12 0h4v7h-4z"/>
+    <path class="o" d="M17 39 7 32l-5 2-2-6 7-4 14 9 3 9-4 7-6-3zm30 0 10-7 5 2 2-6-7-4-14 9-3 9 4 7 6-3z"/>
+    <path class="r" d="M17 36 7 29l-4 2 4 6 9 6 4-3zm30 0 10-7 4 2-4 6-9 6-4-3z"/>
+    <path class="o" d="M19 56h13v5h1v-5h13v6h5v14h-5v7h-8v-5H26v5h-8v-7h-5V62h6z"/>
+    <path class="b" d="M19 60h10v13h-5v6h-5l-2-5v-9h2zm16 0h10v5h2v9l-2 5h-5v-6h-5z"/>
+    <path class="r" d="M14 64h7v14h-6l-2-4zm29 0h7l1 10-2 4h-6z"/>
+    <path class="o" d="M29 43h6v11h-6zm-5 3h5v3h-5zm11 0h5v3h-5z"/>
+  </g>
+</svg>

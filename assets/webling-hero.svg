@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 320" role="img" aria-labelledby="title desc">
+  <title id="title">Webling, a masked spider-themed web hero</title>
+  <desc id="desc">A red and blue masked superhero hanging upside down from a web with one hand.</desc>
+  <defs>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff5365"/>
+      <stop offset=".5" stop-color="#e32649"/>
+      <stop offset="1" stop-color="#a80f32"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#315fd1"/>
+      <stop offset=".58" stop-color="#173a9c"/>
+      <stop offset="1" stop-color="#0d236d"/>
+    </linearGradient>
+    <linearGradient id="lens" x1="0" y1="0" x2=".8" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset=".7" stop-color="#e8f6ff"/>
+      <stop offset="1" stop-color="#a8d5ef"/>
+    </linearGradient>
+    <radialGradient id="maskGlow" cx="34%" cy="22%" r="75%">
+      <stop offset="0" stop-color="#ff6675"/>
+      <stop offset=".55" stop-color="#dc2045"/>
+      <stop offset="1" stop-color="#9c0c2d"/>
+    </radialGradient>
+    <filter id="softShadow" x="-30%" y="-20%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#070b19" flood-opacity=".34"/>
+    </filter>
+    <clipPath id="headClip">
+      <path d="M120 174c-27 0-43 17-42 48l3 37c2 28 19 45 39 47 20-2 37-19 39-47l3-37c1-31-15-48-42-48Z"/>
+    </clipPath>
+    <clipPath id="torsoClip">
+      <path d="M91 86c17-9 41-9 58 0 9 6 14 18 15 34l4 39c-10 20-27 31-48 31s-38-11-48-31l4-39c1-16 6-28 15-34Z"/>
+    </clipPath>
+  </defs>
+
+  <g filter="url(#softShadow)" stroke="#11182e" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Bent legs form a readable inverted silhouette. -->
+    <path fill="url(#blue)" d="M104 103C83 104 65 92 51 76L28 50c-9-10-8-24 2-32 10-8 24-6 31 5l19 29c8 12 20 18 36 17Z"/>
+    <path fill="url(#red)" d="M56 69 28 50c-9-10-8-24 2-32 10-8 24-6 31 5l18 28Z"/>
+    <path fill="url(#blue)" d="M136 103c21 3 39-5 53-18l21-20c10-9 11-23 2-32-9-9-23-9-32 0l-21 20c-9 9-21 13-36 11Z"/>
+    <path fill="url(#red)" d="m184 80 26-15c10-9 11-23 2-32-9-9-23-9-32 0l-21 20Z"/>
+
+    <!-- Athletic torso with blue side panels. -->
+    <path fill="url(#red)" d="M91 86c17-9 41-9 58 0 9 6 14 18 15 34l4 39c-10 20-27 31-48 31s-38-11-48-31l4-39c1-16 6-28 15-34Z"/>
+    <path fill="url(#blue)" stroke="none" d="M72 151c10 1 19-5 24-17l7-51c-20 3-27 15-28 38Zm96 0c-10 1-19-5-24-17l-7-51c20 3 27 15 28 38Z" clip-path="url(#torsoClip)"/>
+    <path fill="none" stroke="#ff7180" stroke-width="3" opacity=".55" d="M105 86c8-3 20-4 30 0"/>
+
+    <!-- Left arm, bent in a relaxed counter-pose. -->
+    <path fill="url(#blue)" d="M79 131c-14 3-27 12-36 25l-17 24c-7 10-5 23 5 29 10 7 23 4 29-6l14-24c7-11 18-16 30-17Z"/>
+    <path fill="url(#red)" d="m53 165-27 15c-7 10-5 23 5 29 10 7 23 4 29-6l13-23Z"/>
+    <path fill="none" stroke="#7d0b28" stroke-width="3" d="m34 179 24 21m-30-7 33-7" opacity=".78"/>
+
+    <!-- Web-shooting arm reaches toward the anchor. -->
+    <path fill="url(#blue)" d="M156 139c18-11 23-26 15-43l-17-33-28 15 14 31c4 9 1 18-10 27Z"/>
+    <path fill="url(#red)" d="m154 67-28 15-13-31c-4-10 1-21 11-25 10-4 21 1 25 11Z"/>
+    <path fill="url(#red)" d="M124 31c-7-1-11-7-10-14l2-8c1-5 6-8 11-7 5 1 8 6 7 11l-2 8c-1 7-5 11-8 10Z"/>
+    <path fill="none" stroke="#7d0b28" stroke-width="3" d="m118 47 30 1m-27 11 30-2m-24-20 15 29" opacity=".78"/>
+
+    <!-- Masked head. -->
+    <path fill="url(#maskGlow)" d="M120 174c-27 0-43 17-42 48l3 37c2 28 19 45 39 47 20-2 37-19 39-47l3-37c1-31-15-48-42-48Z"/>
+
+    <!-- Mask webbing clipped cleanly to the face. -->
+    <g clip-path="url(#headClip)" fill="none" stroke="#6d0924" stroke-width="2.4" opacity=".82">
+      <path d="M120 168v143M72 204l96 48M72 252l96-48M82 281l76-78M82 202l76 79"/>
+      <path d="M91 181c19 15 39 15 58 0M81 210c26 15 52 15 78 0M78 242c28 15 56 15 84 0M82 274c25 13 51 13 76 0"/>
+    </g>
+
+    <!-- Crisp expressive lenses. -->
+    <path fill="url(#lens)" d="M88 216c8-13 17-21 28-25-1 22-7 39-21 51-6-5-8-14-7-26Z"/>
+    <path fill="url(#lens)" d="M152 216c-8-13-17-21-28-25 1 22 7 39 21 51 6-5 8-14 7-26Z"/>
+    <path fill="none" stroke="#fff" stroke-width="2" opacity=".75" d="M94 216c5-8 10-13 16-16m36 16c-5-8-10-13-16-16"/>
+
+    <!-- Original arachnid chest mark. -->
+    <g fill="#10162a" stroke="none">
+      <path d="M120 108c6 0 10 5 10 11v19c0 7-4 12-10 12s-10-5-10-12v-19c0-6 4-11 10-11Z"/>
+      <path d="m112 119-19-13 4-5 17 11Zm16 0 19-13-4-5-17 11Zm-17 12-22-2 1-7 22 2Zm18 0 22-2-1-7-22 2Zm-17 11-17 15-5-5 19-16Zm16 0 17 15 5-5-19-16Z"/>
+    </g>
+
+    <!-- Suit panel seams and restrained web details. -->
+    <g fill="none" stroke="#7d0b28" stroke-width="2.5" opacity=".72">
+      <path d="M120 86v18M96 91c16 8 32 8 48 0M89 103c20 11 42 11 62 0"/>
+      <path d="M105 89 84 116m30-26-32 49m53-50 21 27m-30-26 32 49"/>
+    </g>
+  </g>
+
+  <!-- Clean web strand continues beyond the asset and aligns with the overlay line. -->
+  <path d="M124 2 124 18" fill="none" stroke="#eef7ff" stroke-width="3" stroke-linecap="round"/>
+</svg>

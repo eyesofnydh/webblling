@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Webling Overlay Harness</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: #172039;
+        background: linear-gradient(135deg, #f7f9ff, #e7edfb);
+        font: 16px system-ui, -apple-system, sans-serif;
+        padding-bottom: 120px;
+      }
+      .test-toolbar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #111526;
+        color: #fff;
+        padding: 10px 16px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        z-index: 10000;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.35);
+        font-size: 13px;
+      }
+      .test-toolbar strong {
+        color: #5c7cff;
+        margin-right: 6px;
+      }
+      .test-toolbar button {
+        background: #1d2542;
+        border: 1px solid #37477c;
+        color: #fff;
+        border-radius: 6px;
+        padding: 6px 10px;
+        font: inherit;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .test-toolbar button:hover {
+        background: #2b3762;
+        border-color: #5c7cff;
+      }
+      .test-toolbar select {
+        background: #1d2542;
+        border: 1px solid #37477c;
+        color: #fff;
+        border-radius: 6px;
+        padding: 4px 8px;
+        font: inherit;
+        font-size: 12px;
+      }
+      main {
+        width: min(780px, 86vw);
+        margin: 0 auto;
+        padding: 50px 0;
+      }
+      .mock-nav {
+        height: 54px;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 12px 30px #26365616;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        gap: 16px;
+        font-weight: 700;
+        color: #485675;
+      }
+      h1 {
+        margin: 40px 0 15px;
+        font-size: 40px;
+        letter-spacing: -1.2px;
+      }
+      p {
+        max-width: 620px;
+        color: #576282;
+        line-height: 1.7;
+      }
+      .interactive-demo {
+        margin-top: 30px;
+        padding: 24px;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px #26365612;
+      }
+      .interactive-demo button, .interactive-demo input {
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font: inherit;
+      }
+      .card {
+        height: 140px;
+        margin-top: 24px;
+        border-radius: 20px;
+        background: #fff;
+        box-shadow: 0 15px 40px #26365612;
+      }
+    </style>
+    <script>
+      // Mock chrome extension environment for test harness
+      window.mockState = {
+        enabled: true,
+        personality: 'cheeky',
+        characterSize: 'medium',
+        startPosition: 'top-right',
+        swingToClicks: false,
+        showFocusIndicator: true,
+        showHydrationWidget: true,
+        spidersEnabled: true,
+        showSpeechBubbles: true,
+        quietMode: false,
+        mishapFrequency: 'normal',
+        webLineColor: '#e8fbff',
+        reducedMotion: false,
+        videoDimming: false,
+        hydration: 2,
+        hydrationTarget: 8,
+        spiderScore: 3,
+        focusStatus: 'idle',
+        focusDuration: 25,
+        focusEndTime: 0,
+        disabledSites: [],
+        equippedCosmetics: {}
+      };
+
+      window.messageListeners = [];
+
+      window.chrome = {
+        runtime: {
+          getURL: (path) => new URL(`../${path}`, location.href).href,
+          sendMessage: (message, callback) => {
+            console.log('[Harness Mock] sendMessage:', message);
+            if (message.type === 'GET_STATE') {
+              callback?.({ success: true, data: window.mockState });
+            } else if (message.type === 'RECORD_RESCUE') {
+              window.mockState.spiderScore += 1;
+              callback?.({ success: true, spiderScore: window.mockState.spiderScore });
+            } else if (message.type === 'HYDRATION_ADD') {
+              window.mockState.hydration = Math.min(window.mockState.hydrationTarget, window.mockState.hydration + 1);
+              callback?.({ success: true, hydration: window.mockState.hydration, justCompleted: window.mockState.hydration >= window.mockState.hydrationTarget });
+            } else if (message.type === 'HYDRATION_REMOVE') {
+              window.mockState.hydration = Math.max(0, window.mockState.hydration - 1);
+              callback?.({ success: true, hydration: window.mockState.hydration });
+            } else if (message.type === 'RECORD_PATROL') {
+              callback?.({ success: true, pagesPatrolled: 1 });
+            } else {
+              callback?.({ success: true });
+            }
+          },
+          onMessage: {
+            addListener: (listener) => {
+              window.messageListeners.push(listener);
+            }
+          }
+        },
+        storage: {
+          local: {
+            get: async (defaults) => ({ ...defaults, ...window.mockState }),
+            set: async (updates) => {
+              Object.assign(window.mockState, updates);
+            }
+          },
+          onChanged: {
+            addListener: () => {}
+          }
+        }
+      };
+
+      function sendHarnessMessage(msg) {
+        window.messageListeners.forEach((fn) => {
+          try { fn(msg, {}, () => {}); } catch(e) { console.error(e); }
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <main>
+      <div class="mock-nav">
+        <span>Webling Test Site</span>
+        <a href="#about" style="color:#5c7cff; text-decoration:none;">Docs</a>
+        <a href="#features" style="color:#5c7cff; text-decoration:none;">Interactive Area</a>
+      </div>
+
+      <h1>Webling Testing Harness</h1>
+      <p>
+        This harness exercises the content script overlay in isolation.
+        Click directly on Webling to make him swing, drag him across the viewport,
+        or use the developer dock below to simulate background events.
+      </p>
+
+      <section class="interactive-demo">
+        <h3>Normal Web Interaction Safety Test</h3>
+        <p>Interactive inputs and buttons should NEVER be intercepted or blocked by Webling:</p>
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+          <input type="text" placeholder="Type here to test focus..." />
+          <button onclick="alert('Standard button clicked successfully!')">Test Web Button</button>
+          <a href="https://example.com" target="_blank" style="padding: 8px 12px; background: #eee; border-radius: 6px; text-decoration: none; color: #333;">Test Link</a>
+        </div>
+      </section>
+
+      <div class="card"></div>
+    </main>
+
+    <!-- Developer Testing Toolbar -->
+    <div class="test-toolbar" role="toolbar" aria-label="Harness Controls">
+      <strong>Webling Test Dock:</strong>
+      <button onclick="sendHarnessMessage({ type: 'WEBLING_SUMMON' })">✦ Summon</button>
+      <select onchange="sendHarnessMessage({ type: 'SETTING_CHANGED', key: 'personality', value: this.value })">
+        <option value="cheeky">Cheeky</option>
+        <option value="brave">Brave</option>
+        <option value="calm">Calm</option>
+      </select>
+      <select onchange="sendHarnessMessage({ type: 'SETTING_CHANGED', key: 'characterSize', value: this.value })">
+        <option value="small">Size: Small</option>
+        <option value="medium" selected>Size: Medium</option>
+        <option value="large">Size: Large</option>
+      </select>
+      <button onclick="sendHarnessMessage({ type: 'FOCUS_STATE_CHANGED', focusStatus: 'running', focusEndTime: Date.now() + 1500000, focusDuration: 25 })">Start Focus (25m)</button>
+      <button onclick="sendHarnessMessage({ type: 'FOCUS_COMPLETED' })">Complete Focus</button>
+      <button onclick="sendHarnessMessage({ type: 'HYDRATION_REMINDER' })">Hydration Reminder</button>
+      <button onclick="sendHarnessMessage({ type: 'COSMETIC_EQUIPPED', category: 'webline', cosmeticId: 'webline-gold' })">Gold Webline</button>
+      <button onclick="sendHarnessMessage({ type: 'COSMETIC_EQUIPPED', category: 'badge', cosmeticId: 'badge-crown' })">Crown Badge</button>
+      <button onclick="sendHarnessMessage({ type: 'WEBLING_STATS' }, {}, (r) => alert('Stats: ' + JSON.stringify(r)))">Inspect Stats</button>
+    </div>
+
+    <script src="../content.js"></script>
+  </body>
+</html>
