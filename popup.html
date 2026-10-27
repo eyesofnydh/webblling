@@ -11,7 +11,7 @@
       <!-- Top Hero Header -->
       <header class="hero-header">
         <div class="mini-avatar" aria-hidden="true">
-          <img src="assets/webling-cute-reference-strip.png" alt="" />
+          <img id="miniAvatarImg" src="assets/hero-webling.png" alt="" />
         </div>
         <div class="header-titles">
           <span class="eyebrow">YOUR TINY WEB HERO</span>
@@ -222,6 +222,32 @@
         <div class="card customize-card">
           <span class="section-label">WEBLING STYLING</span>
 
+          <label class="select-row" for="characterSelect">
+            <span><strong>Hero</strong><small>Which character hangs on your page</small></span>
+            <select id="characterSelect">
+              <option value="webling">Web-Slinger</option>
+              <option value="titan">Green Giant</option>
+              <option value="stormbringer">Thunder Warrior</option>
+              <option value="classic">Classic (original pixel sprite)</option>
+            </select>
+          </label>
+
+          <label class="control-row">
+            <span><strong>Hero Squad</strong><small>The other heroes stroll along the bottom of the page</small></span>
+            <input id="squadMode" type="checkbox" />
+            <i class="mini-switch"></i>
+          </label>
+
+          <label class="control-row">
+            <span><strong>Squad Scuffles</strong><small>Now and then two of them have a little fight</small></span>
+            <input id="squadFights" type="checkbox" />
+            <i class="mini-switch"></i>
+          </label>
+
+          <button id="scuffleBtn" class="scuffle-btn" title="Two squad heroes meet at the bottom of the page and fight">
+            👊 Start a scuffle now
+          </button>
+
           <label class="select-row" for="personalitySelect">
             <span><strong>Personality</strong><small>Voice, attitude and dialogue</small></span>
             <select id="personalitySelect">
@@ -231,14 +257,15 @@
             </select>
           </label>
 
-          <label class="select-row" for="charSizeSelect">
-            <span><strong>Character Size</strong><small>Scale on page</small></span>
-            <select id="charSizeSelect">
-              <option value="small">Small (64px)</option>
-              <option value="medium">Medium (88px)</option>
-              <option value="large">Large (112px)</option>
-            </select>
-          </label>
+          <div class="slider-row">
+            <label for="charSizeSlider"><strong>Character Size</strong><small>Drag to make your hero smaller or bigger</small></label>
+            <div class="slider-line">
+              <span class="slider-end" aria-hidden="true">S</span>
+              <input id="charSizeSlider" type="range" min="32" max="140" step="2" value="88" />
+              <span class="slider-end big" aria-hidden="true">L</span>
+              <output id="charSizeValue" for="charSizeSlider">88px</output>
+            </div>
+          </div>
 
           <label class="select-row" for="startPosSelect">
             <span><strong>Starting Position</strong><small>Corner where Webling spawns</small></span>

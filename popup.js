@@ -393,12 +393,18 @@ function syncControlsFromState() {
 
   // Customize dropdowns
   $('personalitySelect').value = state.personality || 'cheeky';
-  $('charSizeSelect').value = state.characterSize || 'medium';
+  const px = typeof state.characterPx === 'number' ? state.characterPx : 88;
+  $('charSizeSlider').value = px;
+  $('charSizeValue').textContent = `${px}px`;
+  $('characterSelect').value = state.character || 'webling';
+  updateMiniAvatar();
   $('startPosSelect').value = state.startPosition || 'top-right';
   $('webLineColor').value = state.webLineColor || '#e8fbff';
 
   // Companion Switches
   $('spidersEnabled').checked = Boolean(state.spidersEnabled);
+  $('squadMode').checked = Boolean(state.squadMode);
+  $('squadFights').checked = state.squadFights !== false;
   $('showHydrationWidget').checked = Boolean(state.showHydrationWidget);
   $('showFocusIndicator').checked = Boolean(state.showFocusIndicator);
   $('showSpeechBubbles').checked = Boolean(state.showSpeechBubbles);
@@ -422,6 +428,12 @@ function syncControlsFromState() {
   updateFocusUI();
   updateProgressUI();
   updateCosmeticsUI();
+}
+
+function updateMiniAvatar() {
+  const character = state.character || 'webling';
+  $('miniAvatarImg').src = `assets/hero-${character}.png`;
+  $('miniAvatarImg').classList.toggle('pixel', character === 'classic');
 }
 
 async function updateSetting(key, value) {
@@ -471,13 +483,42 @@ function bindControls() {
 
   // Customize Inputs
   $('personalitySelect').addEventListener('change', (e) => updateSetting('personality', e.target.value));
-  $('charSizeSelect').addEventListener('change', (e) => updateSetting('characterSize', e.target.value));
+  let sizeTimer = 0;
+  $('charSizeSlider').addEventListener('input', (e) => {
+    const px = Number(e.target.value);
+    $('charSizeValue').textContent = `${px}px`;
+    clearTimeout(sizeTimer);
+    sizeTimer = setTimeout(() => updateSetting('characterPx', px), 60);
+  });
+
+  $('scuffleBtn').addEventListener('click', async () => {
+    if (!isSupportedTab || !currentTab?.id) {
+      showUnsupportedPage('Open a normal webpage first');
+      return;
+    }
+    if (!state.squadMode) {
+      $('squadMode').checked = true;
+      await updateSetting('squadMode', true);
+    }
+    try {
+      await chrome.tabs.sendMessage(currentTab.id, { type: 'WEBLING_SQUAD_FIGHT' });
+      window.close();
+    } catch {
+      showUnsupportedPage('Refresh this page, then try again');
+    }
+  });
+  $('characterSelect').addEventListener('change', (e) => {
+    updateSetting('character', e.target.value);
+    updateMiniAvatar();
+  });
   $('startPosSelect').addEventListener('change', (e) => updateSetting('startPosition', e.target.value));
   $('webLineColor').addEventListener('change', (e) => updateSetting('webLineColor', e.target.value));
 
   // Switches
   const toggleKeys = [
     'spidersEnabled',
+    'squadMode',
+    'squadFights',
     'showHydrationWidget',
     'showFocusIndicator',
     'showSpeechBubbles',

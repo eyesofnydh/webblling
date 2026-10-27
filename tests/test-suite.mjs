@@ -54,7 +54,11 @@ async function runTests() {
     'assets/icon-32.png',
     'assets/icon-48.png',
     'assets/icon-128.png',
-    'assets/webling-cute-reference-strip.png',
+    'assets/hero-webling.png',
+    'assets/hero-titan.png',
+    'assets/hero-stormbringer.png',
+    'assets/hero-classic.png',
+    'assets/hero-lineup.png',
     'modules/storage.js',
     'modules/achievements.js',
     'modules/dialogue.js'
@@ -63,6 +67,11 @@ async function runTests() {
   filesToCheck.forEach((f) => {
     assert(fs.existsSync(path.join(rootDir, f)), `File exists: ${f}`);
   });
+  for (const group of manifest.web_accessible_resources || []) {
+    for (const res of group.resources) {
+      assert(fs.existsSync(path.join(rootDir, res)), `Web-accessible resource exists: ${res}`);
+    }
+  }
 
   // 2. STORAGE MODULE & VALIDATION
   console.log('\n[2] Storage Schema, Validation & Defaults');
@@ -72,6 +81,13 @@ async function runTests() {
   assert(DEFAULTS.enabled === true, 'Default enabled is true');
   assert(DEFAULTS.personality === 'cheeky', 'Default personality is cheeky');
   assert(DEFAULTS.characterSize === 'medium', 'Default characterSize is medium');
+  assert(DEFAULTS.character === 'webling', 'Default character is webling');
+  assert(DEFAULTS.squadMode === true, 'Hero squad is on by default');
+  assert(DEFAULTS.characterPx === 88, 'Default character size is 88px');
+  assert(storage.validateSettings({ characterPx: 10 }).characterPx === 32, 'Clamps size slider to 32px minimum');
+  assert(storage.validateSettings({ characterPx: 999 }).characterPx === 140, 'Clamps size slider to 140px maximum');
+  assert(storage.validateSettings({ characterSize: 'small' }).characterPx === 64, 'Carries old named size over to the slider');
+  assert(DEFAULTS.squadFights === true, 'Squad scuffles are on by default');
   assert(DEFAULTS.swingToClicks === false, 'Default swingToClicks is false');
   assert(DEFAULTS.hydrationTarget === 8, 'Default hydrationTarget is 8');
   assert(DEFAULTS.schemaVersion === 2, 'Default schemaVersion is 2');
@@ -81,6 +97,7 @@ async function runTests() {
     enabled: 'yes', // should be bool
     personality: 'evil', // invalid enum
     characterSize: 'giant', // invalid enum
+    character: 'nobody', // invalid enum
     hydrationTarget: 50, // out of range 4-12
     webLineColor: 'not-a-color', // invalid hex
     disabledSites: [123, 'valid.com', null] // should only keep strings
@@ -89,6 +106,11 @@ async function runTests() {
   assert(validated.enabled === true, 'Repairs invalid bool with default');
   assert(validated.personality === 'cheeky', 'Repairs invalid enum with default');
   assert(validated.characterSize === 'medium', 'Repairs invalid size with default');
+  assert(validated.character === 'webling', 'Repairs invalid character with default');
+  assert(storage.validateSettings({ character: 'titan' }).character === 'titan', 'Keeps valid character');
+  assert(storage.validateSettings({ characterSize: 'tiny' }).characterSize === 'tiny', 'Accepts tiny size');
+  assert(storage.validateSettings({ characterSize: 'mini' }).characterSize === 'mini', 'Accepts mini size');
+  assert(storage.validateSettings({ squadMode: 'yes' }).squadMode === true, 'Repairs invalid squadMode with default');
   assert(validated.hydrationTarget === 12, 'Clamps out-of-range target to max 12');
   assert(validated.webLineColor === DEFAULTS.webLineColor, 'Repairs invalid hex color with default');
   assert(validated.disabledSites.length === 1 && validated.disabledSites[0] === 'valid.com', 'Filters non-string sites');

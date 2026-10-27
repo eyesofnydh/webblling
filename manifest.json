@@ -47,7 +47,10 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "assets/webling-cute-reference-strip.png",
+        "assets/hero-classic.png",
+        "assets/hero-webling.png",
+        "assets/hero-titan.png",
+        "assets/hero-stormbringer.png",
         "assets/icon-128.png"
       ],
       "matches": [

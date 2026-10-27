@@ -76,12 +76,12 @@ body {
 }
 
 .mini-avatar img {
-  width: 176px;
+  width: 352px;
+  justify-self: start;
   max-width: none;
   height: 55px;
   transform: translateY(-1px);
   transform-origin: left top;
-  image-rendering: pixelated;
   filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.4));
 }
 
@@ -234,6 +234,10 @@ h1 {
   box-shadow: 0 8px 20px rgba(239, 49, 80, 0.25);
   transition: all 0.15s ease;
 }
+.mini-avatar img.pixel {
+  image-rendering: pixelated;
+}
+
 .primary-btn:hover {
   transform: translateY(-1px);
   filter: brightness(1.08);
@@ -736,6 +740,64 @@ h1 {
   font-size: 9px;
   color: var(--muted);
   margin-top: 1px;
+}
+
+/* Size slider */
+.slider-row {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.slider-row strong {
+  display: block;
+  font-size: 11px;
+}
+.slider-row small {
+  display: block;
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+.slider-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.slider-line input[type="range"] {
+  flex: 1;
+  accent-color: var(--red);
+  cursor: pointer;
+}
+.slider-end {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--muted);
+}
+.slider-end.big {
+  font-size: 13px;
+}
+.slider-line output {
+  min-width: 40px;
+  text-align: right;
+  font: 700 11px ui-monospace, monospace;
+  color: #fff;
+}
+
+/* Scuffle button */
+.scuffle-btn {
+  width: 100%;
+  margin: 8px 0 4px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  color: #fff;
+  background: linear-gradient(100deg, #4b2bb8, #2d8cff);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.scuffle-btn:hover {
+  filter: brightness(1.1);
 }
 
 /* Mini Switch */

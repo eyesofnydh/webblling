@@ -25,7 +25,8 @@ export const SCHEMA_VERSION = 2;
 // ---------------------------------------------------------------------------
 
 const PERSONALITIES   = ['cheeky', 'brave', 'calm'];
-const CHARACTER_SIZES = ['small', 'medium', 'large'];
+const CHARACTER_SIZES = ['tiny', 'mini', 'small', 'medium', 'large'];
+const CHARACTERS      = ['webling', 'titan', 'stormbringer', 'classic'];
 const POSITIONS       = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
 const MISHAP_FREQS    = ['off', 'rare', 'normal', 'frequent'];
 const FOCUS_STATUSES  = ['idle', 'running', 'paused', 'break'];
@@ -41,6 +42,10 @@ export const DEFAULTS = Object.freeze({
   enabled:                    true,
   personality:                'cheeky',
   characterSize:              'medium',
+  characterPx:                88,
+  character:                  'webling',
+  squadMode:                  true,
+  squadFights:                true,
   startPosition:              'top-right',
   swingToClicks:              false,
   showFocusIndicator:         true,
@@ -235,6 +240,15 @@ export function validateSettings(data) {
   bool('enabled');
   enumStr('personality', PERSONALITIES);
   enumStr('characterSize', CHARACTER_SIZES);
+  num('characterPx', 32, 140);
+  if (!('characterPx' in data) && typeof data.characterSize === 'string') {
+    // Older installs chose a named size; carry it over to the slider
+    const legacy = { tiny: 40, mini: 52, small: 64, medium: 88, large: 112 };
+    if (legacy[data.characterSize]) safe.characterPx = legacy[data.characterSize];
+  }
+  enumStr('character', CHARACTERS);
+  bool('squadMode');
+  bool('squadFights');
   enumStr('startPosition', POSITIONS);
   bool('swingToClicks');
   bool('showFocusIndicator');

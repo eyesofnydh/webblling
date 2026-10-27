@@ -31,7 +31,13 @@
   `;
   document.documentElement.appendChild(focusStyle);
 
-  const heroAssetUrl = chrome.runtime.getURL('assets/webling-cute-reference-strip.png');
+  const HERO_ASSETS = {
+    webling: chrome.runtime.getURL('assets/hero-webling.png'),
+    titan: chrome.runtime.getURL('assets/hero-titan.png'),
+    stormbringer: chrome.runtime.getURL('assets/hero-stormbringer.png'),
+    classic: chrome.runtime.getURL('assets/hero-classic.png'),
+  };
+  const heroAssetUrl = HERO_ASSETS.webling;
 
   // ---------------------------------------------------------------------------
   // Dialogue Data (Inlined for Content Script Isolation)
@@ -306,6 +312,8 @@
       }
 
       /* Character sizes */
+      .stage.size-tiny { --wb-char-size: 40px; }
+      .stage.size-mini { --wb-char-size: 52px; }
       .stage.size-small { --wb-char-size: 64px; }
       .stage.size-medium { --wb-char-size: 88px; }
       .stage.size-large { --wb-char-size: 112px; }
@@ -378,21 +386,76 @@
         transform: scaleX(-1);
       }
 
-      /* Character Sprite Sheet (4 frames: 0%, -25%, -50%, -75%) */
+      /* Character Sprite Sheet (8 frames: hang, anticipate, flight, recover, stand, walk, walk, punch) */
       .hero-art {
         display: block;
-        width: 400%;
+        width: 800%;
         max-width: none;
         height: 100%;
         object-fit: fill;
-        image-rendering: pixelated;
-        image-rendering: crisp-edges;
+        image-rendering: auto;
         pointer-events: none;
         transform: translateX(0);
       }
-      .buddy.anticipating .hero-art { transform: translateX(-25%); }
-      .buddy.in-flight .hero-art    { transform: translateX(-50%); }
-      .buddy.recovering .hero-art   { transform: translateX(-75%); }
+      .stage.char-classic .hero-art,
+      .walker.char-classic img {
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+      }
+      .buddy.anticipating .hero-art { transform: translateX(-12.5%); }
+      .buddy.in-flight .hero-art    { transform: translateX(-25%); }
+      .buddy.recovering .hero-art   { transform: translateX(-37.5%); }
+
+      /* Hero squad walking along the bottom of the page */
+      .squad {
+        position: fixed;
+        inset: auto 0 0 0;
+        height: 0;
+        pointer-events: none;
+        z-index: 80;
+      }
+      .walker {
+        position: fixed;
+        left: 0;
+        bottom: 2px;
+        width: calc(var(--wb-char-size) * 0.72);
+        height: calc(var(--wb-char-size) * 0.9);
+        pointer-events: none;
+        filter: drop-shadow(2px 3px 0 rgba(7, 11, 25, 0.25));
+        will-change: transform;
+      }
+      .walker .w-face {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      .walker.left .w-face {
+        transform: scaleX(-1);
+      }
+      .walker img {
+        display: block;
+        width: 800%;
+        max-width: none;
+        height: 100%;
+        pointer-events: none;
+        transform: translateX(calc(var(--frame, 4) * -12.5%));
+      }
+      .walker.hit .w-face {
+        animation: walker-hit 0.25s ease-out;
+      }
+      .squad-pow {
+        position: fixed;
+        width: 60px;
+        margin-left: -30px;
+        text-align: center;
+        font: 900 15px/1 Impact, "Arial Black", sans-serif;
+        letter-spacing: 1px;
+        color: #fff36b;
+        -webkit-text-stroke: 1.5px #2a0b3a;
+        text-shadow: 2px 2px 0 #2a0b3a;
+        pointer-events: none;
+        animation: squad-pow 0.6s cubic-bezier(0.2, 1.4, 0.4, 1) forwards;
+      }
 
       .buddy.anticipating .hero-shell {
         animation: anticipate 0.2s ease-in forwards;
@@ -641,6 +704,16 @@
       }
 
       /* Keyframe animations */
+      @keyframes walker-hit {
+        0%   { translate: 0 0; }
+        40%  { translate: 0 -6px; }
+        100% { translate: 0 0; }
+      }
+      @keyframes squad-pow {
+        0%   { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+        30%  { transform: scale(1.2) rotate(-6deg); opacity: 1; }
+        100% { transform: scale(1) rotate(-6deg) translateY(-14px); opacity: 0; }
+      }
       @keyframes idle-sway {
         from { transform: rotate(-2.5deg) translateX(-2px); }
         to   { transform: rotate(2.5deg) translateX(2px); }
@@ -677,6 +750,7 @@
         .web-line { transition: none !important; }
       }
       .reduced-motion .hero-shell { animation: none !important; }
+      .reduced-motion .walker .w-face { animation: none !important; }
       .reduced-motion .tiny-spider { animation: none !important; }
     </style>
 
@@ -688,6 +762,8 @@
       </div>
 
       <div class="web-line" aria-hidden="true"></div>
+
+      <div class="squad" aria-hidden="true"></div>
 
       <div class="hydration-widget" aria-label="Daily water tracker">
         <span class="hydration-icon" aria-hidden="true">💧</span>
@@ -728,6 +804,8 @@
   const bubble = shadow.querySelector('.bubble');
   const badgeSlot = shadow.querySelector('.badge-slot');
   const effectSlot = shadow.querySelector('.effect-slot');
+  const heroArt = shadow.querySelector('.hero-art');
+  const squadLane = shadow.querySelector('.squad');
   const focusBadge = shadow.querySelector('.focus-badge');
   const focusText = shadow.querySelector('.focus-text');
   const focusClose = shadow.querySelector('.focus-close');
@@ -745,6 +823,10 @@
     enabled: true,
     personality: 'cheeky',
     characterSize: 'medium',
+    characterPx: 88,
+    character: 'webling',
+    squadMode: true,
+    squadFights: true,
     startPosition: 'top-right',
     swingToClicks: false,
     showFocusIndicator: true,
@@ -824,7 +906,7 @@
     if (!settings.enabled || isSiteDisabled()) return;
     const rect = buddy.getBoundingClientRect();
     const handX = rect.left + rect.width * 0.5;
-    const handY = rect.top + rect.height * 0.08;
+    const handY = rect.top + rect.height * 0.1;
     const dx = handX - anchorX;
     const dy = Math.max(1, handY - anchorY);
     const length = Math.hypot(dx, dy);
@@ -1088,19 +1170,7 @@
 
     const rescue = (e) => {
       e.stopPropagation();
-      if (spider.classList.contains('caught')) return;
-      spider.classList.add('caught');
-
-      chrome.runtime.sendMessage({ type: 'RECORD_RESCUE' }, (resp) => {
-        const score = resp?.spiderScore || 1;
-        say(`Tiny spider rescued! Score: ${score}`, 2500);
-      });
-
-      setTimeout(() => {
-        spider.remove();
-        activeSpider = null;
-        scheduleSpiderSpawn();
-      }, 350);
+      rescueSpider(spider);
     };
 
     spider.addEventListener('click', rescue);
@@ -1113,6 +1183,241 @@
 
     stage.appendChild(spider);
     activeSpider = spider;
+  }
+
+  function rescueSpider(spider) {
+    if (spider.classList.contains('caught')) return;
+    spider.classList.add('caught');
+
+    chrome.runtime.sendMessage({ type: 'RECORD_RESCUE' }, (resp) => {
+      const score = resp?.spiderScore || 1;
+      say(`Tiny spider rescued! Score: ${score}`, 2500);
+    });
+
+    setTimeout(() => {
+      spider.remove();
+      if (activeSpider === spider) activeSpider = null;
+      scheduleSpiderSpawn();
+    }, 350);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Hero Squad (other heroes stroll along the bottom and sometimes scuffle)
+  // ---------------------------------------------------------------------------
+
+  const SQUAD_HEROES = ['webling', 'titan', 'stormbringer'];
+  const FRAME = { stand: 4, walkA: 5, walkB: 6, punch: 7 };
+  const POW_WORDS = ['POW!', 'BAM!', 'WHAM!', 'BONK!', 'SMACK!'];
+
+  let walkers = [];
+  let squadRaf = 0;
+  let squadLastTs = 0;
+  let squadFightTimer = 0;
+  let squadFightsSoFar = 0;
+
+  function currentCharacter() {
+    return HERO_ASSETS[settings.character] ? settings.character : 'webling';
+  }
+
+  function squadActive() {
+    return Boolean(settings.squadMode) && !isSiteDisabled() && activeFocus.status !== 'running';
+  }
+
+  function walkerWidth() {
+    return walkers[0]?.el.offsetWidth || 60;
+  }
+
+  function laneBounds() {
+    const w = walkerWidth();
+    const widgetSpace = settings.showHydrationWidget ? 205 : 8;
+    return { min: 8, max: Math.max(80, window.innerWidth - w - widgetSpace) };
+  }
+
+  function setWalkerFrame(walker, frame) {
+    if (walker.frame === frame) return;
+    walker.frame = frame;
+    walker.el.style.setProperty('--frame', frame);
+  }
+
+  function placeWalker(walker) {
+    walker.el.style.transform = `translateX(${Math.round(walker.x)}px)`;
+    walker.el.classList.toggle('left', walker.dir < 0);
+  }
+
+  function buildSquad() {
+    const main = currentCharacter();
+    const names = SQUAD_HEROES.filter((name) => name !== main);
+    const same = walkers.length === names.length && walkers.every((w, i) => w.name === names[i]);
+    if (same) return;
+
+    squadLane.textContent = '';
+    const { min, max } = laneBounds();
+    walkers = names.map((name, i) => {
+      const el = document.createElement('div');
+      el.className = `walker char-${name}`;
+      el.innerHTML = `<div class="w-face"><img src="${HERO_ASSETS[name]}" alt="" /></div>`;
+      squadLane.appendChild(el);
+      const walker = {
+        name,
+        el,
+        x: min + ((max - min) * (i + 1)) / (names.length + 1),
+        dir: Math.random() > 0.5 ? 1 : -1,
+        speed: 22 + Math.random() * 16,
+        mode: 'walk',
+        until: performance.now() + 3000 + Math.random() * 5000,
+        step: 0,
+        frame: -1,
+      };
+      setWalkerFrame(walker, FRAME.stand);
+      placeWalker(walker);
+      return walker;
+    });
+  }
+
+  function popAt(x, bottomOffset) {
+    const pow = document.createElement('div');
+    pow.className = 'squad-pow';
+    pow.textContent = POW_WORDS[Math.floor(Math.random() * POW_WORDS.length)];
+    pow.style.left = `${x}px`;
+    pow.style.bottom = `${bottomOffset}px`;
+    squadLane.appendChild(pow);
+    setTimeout(() => pow.remove(), 650);
+  }
+
+  function updateWalker(walker, now, dt) {
+    const { min, max } = laneBounds();
+
+    if (walker.mode === 'fight') {
+      const foe = walker.foe;
+      walker.dir = foe.x > walker.x ? 1 : -1;
+      // Trade blows: whoever's turn it is throws a punch, the other flinches
+      const beat = Math.floor((now - walker.fightStart) / 260);
+      const attacking = (beat + (walker.leads ? 0 : 1)) % 2 === 0;
+      setWalkerFrame(walker, attacking ? FRAME.punch : FRAME.stand);
+      if (!attacking && walker.lastBeat !== beat) {
+        walker.lastBeat = beat;
+        walker.el.classList.remove('hit');
+        void walker.el.offsetWidth;
+        walker.el.classList.add('hit');
+        if (beat % 2 === 0 || beat < 2) {
+          popAt((walker.x + foe.x) / 2 + walkerWidth() / 2, walker.el.offsetHeight * 0.75);
+        }
+      }
+      if (now > walker.until) {
+        walker.mode = 'walk';
+        walker.dir = foe.x > walker.x ? -1 : 1;
+        walker.until = now + 4000 + Math.random() * 5000;
+        walker.el.classList.remove('hit');
+      }
+      placeWalker(walker);
+      return;
+    }
+
+    if (walker.mode === 'approach') {
+      const foe = walker.foe;
+      walker.dir = foe.x > walker.x ? 1 : -1;
+      if (Math.abs(foe.x - walker.x) < walkerWidth() * 0.62) {
+        const start = now;
+        for (const fighter of [walker, foe]) {
+          fighter.mode = 'fight';
+          fighter.fightStart = start;
+          fighter.until = start + 1700 + Math.random() * 600;
+          fighter.lastBeat = -1;
+        }
+        foe.until = walker.until;
+        walker.leads = true;
+        foe.leads = false;
+        return;
+      }
+    } else if (now > walker.until) {
+      if (walker.mode === 'walk') {
+        walker.mode = 'rest';
+        walker.until = now + 1500 + Math.random() * 3000;
+      } else {
+        walker.mode = 'walk';
+        walker.dir = Math.random() > 0.5 ? 1 : -1;
+        walker.until = now + 4000 + Math.random() * 6000;
+      }
+    }
+
+    if (walker.mode === 'rest') {
+      setWalkerFrame(walker, FRAME.stand);
+      placeWalker(walker);
+      return;
+    }
+
+    const speed = walker.mode === 'approach' ? walker.speed * 2.2 : walker.speed;
+    walker.x += walker.dir * speed * dt;
+    if (walker.x < min) { walker.x = min; walker.dir = 1; }
+    if (walker.x > max) { walker.x = max; walker.dir = -1; }
+    walker.step += dt * (speed / 9);
+    setWalkerFrame(walker, Math.floor(walker.step) % 2 === 0 ? FRAME.walkA : FRAME.walkB);
+    placeWalker(walker);
+  }
+
+  function squadTick(ts) {
+    const dt = squadLastTs ? Math.min(0.05, (ts - squadLastTs) / 1000) : 0;
+    squadLastTs = ts;
+    const now = performance.now();
+    for (const walker of walkers) updateWalker(walker, now, dt);
+    squadRaf = requestAnimationFrame(squadTick);
+  }
+
+  function scheduleSquadFight() {
+    clearTimeout(squadFightTimer);
+    if (!squadActive() || !settings.squadFights || isMotionReduced()) return;
+    // First scuffle soon after the squad shows up, then every 15-30s
+    const delay = squadFightsSoFar === 0 ? 4000 + Math.random() * 4000 : 15000 + Math.random() * 15000;
+    squadFightTimer = setTimeout(startSquadFight, delay);
+  }
+
+  function startSquadFight(force = false) {
+    const idle = walkers.filter((w) => w.mode === 'walk' || w.mode === 'rest');
+    if (idle.length >= 2 && squadActive() && (settings.squadFights || force)) {
+      squadFightsSoFar += 1;
+      const a = idle.splice(Math.floor(Math.random() * idle.length), 1)[0];
+      const b = idle[Math.floor(Math.random() * idle.length)];
+      a.mode = 'approach';
+      b.mode = 'approach';
+      a.foe = b;
+      b.foe = a;
+    }
+    scheduleSquadFight();
+  }
+
+  function stopSquad() {
+    cancelAnimationFrame(squadRaf);
+    squadRaf = 0;
+    squadLastTs = 0;
+    clearTimeout(squadFightTimer);
+    walkers = [];
+    squadLane.textContent = '';
+  }
+
+  function syncSquad() {
+    if (!squadActive()) {
+      stopSquad();
+      return;
+    }
+    buildSquad();
+    if (isMotionReduced()) {
+      cancelAnimationFrame(squadRaf);
+      squadRaf = 0;
+      clearTimeout(squadFightTimer);
+      for (const walker of walkers) {
+        walker.mode = 'rest';
+        setWalkerFrame(walker, FRAME.stand);
+        placeWalker(walker);
+      }
+      return;
+    }
+    if (!squadRaf) squadRaf = requestAnimationFrame(squadTick);
+    if (settings.squadFights) {
+      if (!squadFightTimer) scheduleSquadFight();
+    } else {
+      clearTimeout(squadFightTimer);
+      squadFightTimer = 0;
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -1245,8 +1550,21 @@
     const hidden = isSiteDisabled();
     stage.classList.toggle('hidden', hidden);
 
-    stage.classList.remove('size-small', 'size-medium', 'size-large');
+    stage.classList.remove('size-tiny', 'size-mini', 'size-small', 'size-medium', 'size-large');
     stage.classList.add(`size-${settings.characterSize || 'medium'}`);
+    if (typeof settings.characterPx === 'number') {
+      stage.style.setProperty('--wb-char-size', `${Math.round(settings.characterPx)}px`);
+    } else {
+      stage.style.removeProperty('--wb-char-size');
+    }
+
+    const character = HERO_ASSETS[settings.character] ? settings.character : 'webling';
+    for (const name of Object.keys(HERO_ASSETS)) {
+      stage.classList.toggle(`char-${name}`, name === character);
+    }
+    if (heroArt.getAttribute('src') !== HERO_ASSETS[character]) {
+      heroArt.src = HERO_ASSETS[character];
+    }
 
     stage.classList.toggle('reduced-motion', isMotionReduced());
 
@@ -1261,6 +1579,7 @@
     applyCosmetics();
     updateHydrationUI();
     updateFocusIndicator();
+    syncSquad();
 
     if (!hidden) {
       syncWeb();
@@ -1438,9 +1757,12 @@
         break;
       }
 
-      case 'WEBLING_STATS': {
-        const intel = calculatePageIntel();
-        sendResponse(intel);
+      case 'WEBLING_SQUAD_FIGHT': {
+        settings.squadMode = true;
+        syncSquad();
+        // Give freshly spawned walkers a moment to appear before they charge
+        setTimeout(() => startSquadFight(true), walkers.length ? 150 : 400);
+        sendResponse({ success: true, squad: walkers.length });
         break;
       }
 
@@ -1449,6 +1771,8 @@
         applySettings();
         if (message.key === 'personality') {
           say('New vibe unlocked!');
+        } else if (message.key === 'character') {
+          say('Suit up!');
         }
         sendResponse({ success: true });
         break;
@@ -1472,6 +1796,7 @@
 
       case 'FOCUS_STATE_CHANGED': {
         activeFocus.status = message.focusStatus;
+        syncSquad();
         if (message.focusEndTime) activeFocus.endTime = message.focusEndTime;
         if (message.focusDuration) activeFocus.duration = message.focusDuration;
         applySettings();
@@ -1481,6 +1806,7 @@
 
       case 'FOCUS_COMPLETED': {
         activeFocus.status = 'idle';
+        syncSquad();
         applySettings();
         speakCategory('focusComplete', 4000);
         swingRandomly();
@@ -1547,6 +1873,10 @@
         enabled: data.enabled,
         personality: data.personality,
         characterSize: data.characterSize,
+        characterPx: data.characterPx,
+        character: data.character,
+        squadMode: data.squadMode,
+        squadFights: data.squadFights,
         startPosition: data.startPosition,
         swingToClicks: data.swingToClicks,
         showFocusIndicator: data.showFocusIndicator,

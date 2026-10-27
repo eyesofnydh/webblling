@@ -1,8 +1,8 @@
 # Webling — Your Tiny Web Hero 🕸️
 
-Webling is a delightful, privacy-first Manifest V3 browser extension for Google Chrome and Microsoft Edge. It brings a cute, pixel-art spider-themed companion to life on your webpages to support your daily focus sessions, track hydration, rescue tiny spiders, provide page insights, and unlock cosmetic rewards.
+Webling is a delightful, privacy-first Manifest V3 browser extension for Google Chrome and Microsoft Edge. It brings a cartoon hero companion to life on your webpages to support your daily focus sessions, track hydration, rescue tiny spiders, provide page insights, and unlock cosmetic rewards.
 
-![Webling Preview](webling-preview.png)
+![The Webling heroes](assets/hero-lineup.png)
 
 ---
 
@@ -11,7 +11,7 @@ Webling is a delightful, privacy-first Manifest V3 browser extension for Google 
 - **Interactive Webpage Companion**:
   - Rendered in an isolated Shadow DOM (`mode: 'closed'`) so webpage styles never clash with Webling and Webling never pollutes webpage styles.
   - Idle hanging with gentle swaying physics.
-  - Direction-aware pixel movement: Webling faces left or right based on drag velocity or swing direction.
+  - Direction-aware movement: Webling faces left or right based on drag velocity or swing direction.
   - Multi-frame sprite animation: anticipation pose, in-flight swing curve, recovery landing, and idle hanging.
   - Interactive web-line rendering that accurately tracks Webling's hand in real time.
   - Dragging via mouse, touch, or pen (Pointer Events with capture).
@@ -20,6 +20,18 @@ Webling is a delightful, privacy-first Manifest V3 browser extension for Google 
   - Contextual speech bubbles with 3 distinct personalities and over 150 unique dialogue lines.
   - Non-intrusive: links, buttons, inputs, text selection, and scrolling on the host page remain 100% interactive and unblocked.
   - Optional "Swing to page clicks" mode (disabled by default; ignores interactive elements, forms, links, buttons, and media controls when enabled).
+
+- **Pick Your Hero** (Customize → Hero):
+  - **Web-Slinger**: red-and-blue masked hero with big white lenses.
+  - **Green Giant**: huge green brute in torn purple shorts.
+  - **Thunder Warrior**: winged helm, red cape and a lightning hammer.
+  - **Classic**: the original pixel sprite.
+  - Five sizes: Tiny (40px), Mini (52px), Small (64px), Medium (88px), Large (112px).
+
+- **Hero Squad** (Customize → Hero Squad, off by default):
+  - The heroes you didn't pick stroll along the bottom of the page, stopping now and then.
+  - **Squad Scuffles**: every so often two of them meet up and trade a few punches (POW! BAM!), then walk off.
+  - Never blocks the page (no pointer events), stays clear of the water widget, hides during Focus Patrol, and stands still with reduced motion.
 
 - **Three Expressive Personalities**:
   - **Cheeky**: Witty, playful, sarcastic, fourth-wall breaking, pun-heavy.
@@ -80,14 +92,14 @@ Webling is a delightful, privacy-first Manifest V3 browser extension for Google 
 1. Open Chrome and navigate to `chrome://extensions/`.
 2. Enable **Developer mode** using the toggle in the top-right corner.
 3. Click **Load unpacked** in the top-left corner.
-4. Select this project directory (`Spoidermon`).
+4. Select the `dist/webling` folder (run `npm run build` first; see **Clean Build** below), or this project folder for development.
 5. Click the puzzle icon in the Chrome toolbar and pin **Webling**.
 
 ### Microsoft Edge
 1. Open Edge and navigate to `edge://extensions/`.
 2. Turn on **Developer mode** in the left sidebar.
 3. Click **Load unpacked**.
-4. Select this project directory (`Spoidermon`).
+4. Select the `dist/webling` folder (or this project folder for development).
 5. Pin Webling to the Edge toolbar for easy access.
 
 ---
@@ -132,13 +144,23 @@ Webling is built strictly as a local companion:
 
 ---
 
+## 📦 Clean Build
+
+```bash
+npm run build        # or: node scripts/build.mjs
+```
+
+This runs the test suite, copies only the files the extension needs into `dist/webling/`, checks that every file referenced by the manifest, pages and scripts is present, and packs `dist/webling-<version>.zip`. No dependencies needed, just Node 18+.
+
+---
+
 ## 🧪 Testing and Test Harness
 
 ### Automated Test Suite
 Run the automated test suite in Node.js (covers storage validation, v1→v2 migration, achievements, cosmetics, dialogue, timer math, site matching, and manifest integrity):
 
 ```bash
-node tests/test-suite.mjs
+npm test             # or: node tests/test-suite.mjs
 ```
 
 ### Visual Overlay Harness
@@ -148,7 +170,14 @@ Open `tests/overlay-harness.html` directly in your browser:
 - Confirms that webpage links, buttons, and form inputs are never blocked by Webling.
 
 ### Preview Character Assets
-Open `preview.html` in your browser to inspect Webling's pixel-art sprite strip at 48px, 80px, 120px, and 160px display sizes.
+Open `preview.html` in your browser to inspect the hero sprite strip at 48px, 80px, 120px, and 160px display sizes.
+
+### Regenerating Hero Sprites
+The hero art is drawn by code, not by hand. `scripts/build-hero-sprites.py` (needs Pillow) renders each hero's 8-frame strip (`assets/hero-*.png`: hang, anticipate, flight, recover, stand, walk ×2, punch), the onboarding lineup and the toolbar icons. Tweak poses, proportions or colours there and rerun:
+
+```bash
+npm run sprites      # or: python scripts/build-hero-sprites.py
+```
 
 ---
 
@@ -157,32 +186,30 @@ Open `preview.html` in your browser to inspect Webling's pixel-art sprite strip 
 ```text
 Spoidermon/
 ├── manifest.json              # Manifest V3 extension configuration
+├── package.json               # npm scripts: test, build, sprites (no dependencies)
 ├── background.js              # Service worker (alarms, focus timer, rollover, notifications)
-├── content.js                 # Content script (Shadow DOM, sprite animations, dragging, widgets)
-├── popup.html                 # 5-tab extension popup interface
-├── popup.css                  # Dark, playful, pixel-inspired popup styles
-├── popup.js                   # Popup logic and cross-extension messaging
-├── onboarding.html            # First-run guided tour card
-├── onboarding.css             # Onboarding modal styles
-├── onboarding.js              # Onboarding step navigation
-├── preview.html               # Pixel art asset preview harness
-├── README.md                  # Complete documentation
+├── content.js                 # Content script (Shadow DOM, hero, web line, squad, widgets)
+├── popup.html / .css / .js    # 5-tab extension popup
+├── onboarding.html / .css / .js  # First-run guided tour
+├── preview.html               # Sprite preview at several display sizes
 ├── assets/
-│   ├── icon-16.png            # 16x16 pixel-art toolbar icon
-│   ├── icon-32.png            # 32x32 icon
-│   ├── icon-48.png            # 48x48 icon
-│   ├── icon-128.png           # 128x128 store & notification icon
-│   ├── webling-cute-reference-strip.png  # 4-frame character sprite strip (idle, anticipate, flight, recover)
-│   └── webling-hero.svg       # Vector illustration of Webling
+│   ├── icon-16/32/48/128.png  # Toolbar and store icons
+│   ├── hero-webling.png       # 8-frame hero sprite strips
+│   ├── hero-titan.png
+│   ├── hero-stormbringer.png
+│   ├── hero-classic.png       # Original pixel sprite in the 8-frame layout
+│   ├── hero-lineup.png        # All heroes standing (onboarding, README)
+│   └── webling-cute-reference-strip.png  # Source for hero-classic.png (not shipped)
 ├── modules/
 │   ├── storage.js             # Storage schema v2, defaults, validation, migrations
-│   ├── achievements.js        # 12 achievements and 9 cosmetics definitions & checkers
-│   └── dialogue.js            # Cheeky, Brave, and Calm personality dialogue banks
+│   ├── achievements.js        # 12 achievements and 9 cosmetics
+│   └── dialogue.js            # Cheeky, Brave and Calm dialogue banks
 ├── scripts/
-│   └── generate-icons.html    # Canvas generator for pixel-art PNG icons
+│   ├── build.mjs              # Clean build → dist/webling + zip
+│   └── build-hero-sprites.py  # Renders hero strips, lineup and icons
 └── tests/
-    ├── overlay-harness.html   # Isolated test harness with developer dock
-    └── test-suite.mjs         # 99-assertion automated unit/integration test suite
+    ├── overlay-harness.html   # Isolated test page with a developer dock
+    └── test-suite.mjs         # Automated unit/integration tests
 ```
 
 ---
